@@ -1,5 +1,6 @@
 ---
 title: "IODS course project"
+author: "Sari Kinnula"
 output:
   html_document:
     theme: cosmo

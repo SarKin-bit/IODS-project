@@ -1,7 +1,9 @@
 
 # About the project
+#### My first thoughts
+The course seems a bit scary but let's see. I'm hoping to learn how to use GitHub and R Markdown and better my **skills** with R. I heard about the course through an email send by my *doctoral school*. 
 
-*Write a short description about the course and add a link to your GitHub repository here. This is an R Markdown (.Rmd) file so you should use R Markdown syntax.*
+<https://sarkin-bit.github.io/IODS-project/>
 
 ```{r}
 # This is a so-called "R chunk" where you can write R code.
@@ -10,4 +12,3 @@ date()
 
 ```
 The text continues here.
-
