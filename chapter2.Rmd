@@ -1,10 +1,102 @@
-# Insert chapter 2 title here
 
-*Describe the work you have done this week and summarize your learning.*
+# Exercise 2 Linear regression
+---
+author: "Sari Kinnula"
+---
+```{r}
+learning2014<- read.delim("learning2014.txt")
 
-- Describe your work and results clearly. 
-- Assume the reader has an introductory course level understanding of writing and reading R code as well as statistical methods.
-- Assume the reader has no previous knowledge of your data or the more advanced methods you are using.
+dim(learning2014)
+str(learning2014)
+```
+
+There are 166 observations (rows) and 7 variables (columns). 
+Columns are called gender, age, attitude, deep, stra, surf and points. All columns include data in numerical form, except column "gender", which includes only characters.
+
+Graphical overview of the data:
+Initialize plot with data and aesthetic mapping.
+```{r}
+library(ggplot2)
+p1 <- ggplot(learning2014, aes(x = Attitude, y = Points, col = gender))
+```
+
+Define the visualization type (points).
+```{r}
+p2 <- p1 + geom_point()
+```
+
+Draw the plot.
+```{r}
+p2
+```
+
+Add a regression line.
+```{r}
+p3 <- p2 + geom_smooth(method = "lm")
+p3
+```
+
+Summaries of the variables in the data.
+```{r}
+summary(learning2014)
+```
+
+There seems to be a somewhat positive correlation here but distributions of the variables are scattered quite a bit and
+some are quite far from the regression line, meaning that the fit of the model is not perfect.
+
+Setting three variables as explanatory variables and fitting a regression model where exam points is the (dependent) variable:
+
+Create an plot matrix with ggpairs().
+```{r}
+library(ggplot2)
+ggpairs(learning2014, lower = list(combo = wrap("facethist", bins = 20)))
+```
+
+Create a regression model with multiple explanatory variables.
+```{r}
+my_model2 <- lm(Points ~ Attitude + stra + deep, data = learning2014)
+```
+
+Print out a summary of the model.
+```{r}
+summary(my_model2)
+```
+
+Explanatory variable "Attitude" is statistically significant (p<0.05). 
+Explanatory variables "stra" and "deep" are not statistically significant (p>0.05).
+
+Redo the model without the variables that had no statistical significance. I did a simple regression as two 
+of the explanatory variables had no significant effect.
+
+A scatter plot of points versus attitude.
+```{r}
+qplot(Attitude, Points, data = learning2014) + geom_smooth(method = "lm")
+```
+
+Fit a linear model.
+```{r}
+my_model3 <- lm(Points ~ Attitude, data = learning2014)
+summary(my_model3)
+```
+
+Relationship between the target variable (Points) and the explanatory variable (Attitude) is statistically significant (p<0.05).
+Multiple R squared is 0.1906. It is quite low (compared to 1), which means that the data is not that close to the fitted regression line.This indicates that the model explains only some of the variability of the response data around its mean. The model does not seem to fit the data very well.
+  
+Draw diagnostic plots Residuals vs Fitted values, Normal QQ-plot and Residuals vs Leverage.
+```{r}
+par(mfrow = c(2,2))
+plot(my_model2, which = c(1,2,5))
+```
+
+Assumptions of the model are of that of linear regression:Linear relationship, multivariate normality, no or little multicollinearity, no auto-correlation and homoscedasticity.
+
+In the Residuals vs Fitted values the red line is not perfectly flat, which indicates that there is discernible non-linear trend to the residuals. The residuals do not appear to be equally distributed across the entire range of the fitted values.
+
+In the Normal QQ-plot the we can see thet the residuals are not normally distributed as the residual devide from the diagonal line.
+
+In the Residuals vs Leverage there are no cases beyond the Cook’s distance lines which means that there is not any influential cases, i.e. there are no influential outliers.
+
+
 
 ```{r}
 date()
