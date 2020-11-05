@@ -97,7 +97,6 @@ In the Normal QQ-plot the we can see thet the residuals are not normally distrib
 In the Residuals vs Leverage there are no cases beyond the Cook’s distance lines which means that there is not any influential cases, i.e. there are no influential outliers.
 
 
-
 ```{r}
 date()
 ```
