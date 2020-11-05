@@ -47,6 +47,7 @@ Setting three variables as explanatory variables and fitting a regression model 
 
 Create an plot matrix with ggpairs().
 ```{r}
+library(GGally)
 library(ggplot2)
 ggpairs(learning2014, lower = list(combo = wrap("facethist", bins = 20)))
 ```
