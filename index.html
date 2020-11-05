@@ -456,7 +456,7 @@ summary {
 <pre class="r"><code># This is a so-called &quot;R chunk&quot; where you can write R code.
 
 date()</code></pre>
-<pre><code>## [1] &quot;Thu Nov  5 23:29:35 2020&quot;</code></pre>
+<pre><code>## [1] &quot;Fri Nov  6 01:17:43 2020&quot;</code></pre>
 <p>The text continues here…</p>
 <hr />
 </div>
@@ -542,7 +542,7 @@ ggpairs(learning2014, lower = list(combo = wrap(&quot;facethist&quot;, bins = 20
 ## Residual standard error: 5.289 on 162 degrees of freedom
 ## Multiple R-squared:  0.2097, Adjusted R-squared:  0.195 
 ## F-statistic: 14.33 on 3 and 162 DF,  p-value: 2.521e-08</code></pre>
-<p>Explanatory variable “Attitude” is statistically significant (p&lt;0.05). Explanatory variables “stra” and “deep” are not statistically significant (p&gt;0.05).</p>
+<p>Relationship with the explanatory variable “Attitude” and response variable “Points” is statistically significant (p&lt;0.05). Relationship with the explanatory variables “stra” and “deep” are not statistically significant with response variable “Points” (p&gt;0.05).</p>
 <p>Redo the model without the variables that had no statistical significance. I did a simple regression as two of the explanatory variables had no significant effect.</p>
 <p>A scatter plot of points versus attitude.</p>
 <pre class="r"><code>qplot(Attitude, Points, data = learning2014) + geom_smooth(method = &quot;lm&quot;)</code></pre>
@@ -579,7 +579,7 @@ plot(my_model2, which = c(1,2,5))</code></pre>
 <p>In the Normal QQ-plot the we can see thet the residuals are not normally distributed as the residual devide from the diagonal line.</p>
 <p>In the Residuals vs Leverage there are no cases beyond the Cook’s distance lines which means that there is not any influential cases, i.e. there are no influential outliers.</p>
 <pre class="r"><code>date()</code></pre>
-<pre><code>## [1] &quot;Thu Nov  5 23:30:08 2020&quot;</code></pre>
+<pre><code>## [1] &quot;Fri Nov  6 01:18:30 2020&quot;</code></pre>
 <p>Here we go again…</p>
 <hr />
 <p>(more chapters to be added similarly as we proceed with the course!)</p>
