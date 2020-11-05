@@ -11,4 +11,5 @@ The course seems interesting but quite hard. Let's see. I'm hoping to learn how 
 date()
 
 ```
-The text continues here.
+
+The text continues here...

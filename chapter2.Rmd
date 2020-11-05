@@ -1,5 +1,5 @@
 
-# Exercise 2 Linear regression
+# Exercise 2 Regression and model validation
 ---
 author: "Sari Kinnula"
 ---
