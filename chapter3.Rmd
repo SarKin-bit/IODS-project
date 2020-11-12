@@ -29,7 +29,7 @@ gather(alc) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_b
 
 ```
 
-There are 382 observations (rows) and 35 variables (columns). The variables are either integers, numeric, factors or logical.  For more detailed explanation of the variables, please visit: https://archive.ics.uci.edu/ml/datasets/Student+Performance
+There are 382 observations (rows) and 35 variables (columns). Variables in the data are for example school, sex, age, adress, family size, family educational support, free time after school and internet access at home.  For more detailed explanation of the variables, please visit: https://archive.ics.uci.edu/ml/datasets/Student+Performance
 
 Chosen interesting variables: student's grade, school, home address type and student's health.
 
@@ -135,7 +135,7 @@ Print out the coefficients of the model.
 coef(m)
 ```
 
-Absences an d going out with friends are highly significant predictor of the probability of being a high user of alcohol. 
+Absences and going out with friends are highly significant predictor of the probability of being a high user of alcohol. 
 Health and grade are not significant predictor of the probability of being a high user of alcohol. 
 
 
@@ -159,4 +159,90 @@ Print out the odds ratios with their confidence intervals
 ```{r}
 cbind(OR, CI)
 ```
+
+Absences, health, and going out with friends are all positively associated with high use of alcohol whereas grades is negatively associated with high alcohol use.
+Every absence causes the student 8 % more likely to be a high user of alcohol.
+For every increase in the health score the student is 13.5% more likely to be a high user of alcohol.
+Each time the student goes out with friends, they are 107 % more likely to be a high user of alcohol.
+For every increase in the grade the student is 4 % less likely to be a high user of alcohol.
+
+Fit the model.
+```{r}
+m <- glm(high_use ~ absences + goout, data = alc, family = "binomial")
+```
+
+Exploring the predictive power of the model.
+
+Fit the model using only the variables that had a statistical relationship with high/low alcohol consumption.
+```{r}
+m <- glm(high_use ~ absences + goout, data = alc, family = "binomial")
+```
+
+Predict() the probability of high_use.
+```{r}
+probabilities <- predict(m, type = "response")
+```
+
+Add the predicted probabilities to 'alc'.
+```{r}
+alc <- mutate(alc, probability = probabilities)
+```
+
+Use the probabilities to make a prediction of high_use.
+```{r}
+alc <- mutate(alc, prediction = probability > 0.5)
+```
+
+See the last ten original classes, predicted probabilities, and class predictions.
+```{r}
+select(alc, failures, absences, sex, high_use, probability, prediction) %>% tail(10)
+```
+
+Tabulate the target variable versus the predictions
+```{r}
+table(high_use = alc$high_use, prediction = alc$prediction)
+```
+
+23 times the prediction is "high alcohol use" when the variable is not "high alcohol use".
+67 times the prediction is not "high alcohol use" when the variable is "high alcohol use".
+
+Access dplyr and ggplot2.
+```{r}
+library(dplyr); library(ggplot2)
+```
+A graphic visualizing both the actual values and the predictions. 
+
+Initialize a plot of 'high_use' versus 'probability' in 'alc'.
+```{r}
+g <- ggplot(alc, aes(x = probability, y = high_use, col = prediction))
+```
+
+Define the geom as points and draw the plot.
+```{r}
+g + geom_point()
+```
+
+Tabulate the target variable versus the predictions.
+```{r}
+table(high_use = alc$high_use, prediction = alc$prediction) %>% prop.table %>% addmargins
+```
+
+According to the prediction, 82% of all the students are not high alcohol users. According to the actual values 70% of all the students are not high alcohol users. There is a quite big difference between the prediction and the actual model.
+Compute the total proportion of inaccurately classified individuals (the training error).
+
+Define a loss function (average prediction error).
+```{r}
+loss_func <- function(class, prob) {
+  n_wrong <- abs(class - prob) > 0.5
+  mean(n_wrong)
+}
+```
+
+Call loss_func to compute the average number of wrong predictions in the (training) data.
+```{r}
+loss_func(class = alc$high_use, prob = alc$probability)
+```
+
+The training error is about 24%, which shows that the accuracy of the model is about 76%. 
+
 
