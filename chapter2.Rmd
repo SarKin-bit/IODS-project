@@ -1,7 +1,5 @@
 Exercise 2 Regression and model validation
 ---
-author: "Sari Kinnula"
----
 ```{r}
 learning2014<- read.delim("learning2014.txt")
 

@@ -415,9 +415,6 @@ summary {
 
 <div id="exercise-3-logistic-regression" class="section level2">
 <h2>Exercise 3 Logistic regression</h2>
-</div>
-<div id="author-sari-kinnula" class="section level2">
-<h2>author: Sari Kinnula</h2>
 <pre class="r"><code>alc&lt;-read.table(file = &quot;alc.txt&quot;, sep=&quot;\t&quot;, header=TRUE)
 
 dim(alc)</code></pre>
@@ -459,7 +456,7 @@ dim(alc)</code></pre>
 ##  $ G3        : int  8 8 11 14 12 14 12 10 18 14 ...
 ##  $ alc_use   : num  1 1 2.5 1 1.5 1.5 1 1 1 1 ...
 ##  $ high_use  : logi  FALSE FALSE TRUE FALSE FALSE FALSE ...</code></pre>
-<p>Access the tidyverse libraries tidyr, dplyr, ggplot2</p>
+<p>Access the tidyverse libraries tidyr, dplyr, ggplot2.</p>
 <pre class="r"><code>library(tidyr); library(dplyr); library(ggplot2)</code></pre>
 <pre><code>## 
 ## Attaching package: &#39;dplyr&#39;</code></pre>
@@ -508,7 +505,7 @@ dim(alc)</code></pre>
 ## $ G3         &lt;int&gt; 8, 8, 11, 14, 12, 14, 12, 10, 18, 14, 12, 12, 13, 12, 16, …
 ## $ alc_use    &lt;dbl&gt; 1.0, 1.0, 2.5, 1.0, 1.5, 1.5, 1.0, 1.0, 1.0, 1.0, 1.5, 1.0…
 ## $ high_use   &lt;lgl&gt; FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FAL…</code></pre>
-<p>Use gather() to gather columns into key-value pairs and then glimpse() at the resulting data</p>
+<p>Use gather() to gather columns into key-value pairs and then glimpse() at the resulting data.</p>
 <pre class="r"><code>gather(alc) %&gt;% glimpse</code></pre>
 <pre><code>## Rows: 13,370
 ## Columns: 2
@@ -520,7 +517,7 @@ dim(alc)</code></pre>
 <p>There are 382 observations (rows) and 35 variables (columns). Variables in the data are for example school, sex, age, adress, family size, family educational support, free time after school and internet access at home. For more detailed explanation of the variables, please visit: <a href="https://archive.ics.uci.edu/ml/datasets/Student+Performance" class="uri">https://archive.ics.uci.edu/ml/datasets/Student+Performance</a></p>
 <p>Chosen interesting variables: student’s grade, school, home address type and student’s health.</p>
 <p>Hypothesis 1: There is a relationship between alcohol use and student’s grade. Hypothesis 2: There is a relationship between alcohol use and student’s absences. Hypothesis 3: There is a relationship between alcohol use and student’s health. Hypothesis 4: There is a relationship between alcohol use and student’s quality of family relationships.</p>
-<p>#Hypothesis 1:</p>
+<p>#Hypothesis 1: There is a relationship between alcohol use and student’s grade.</p>
 <pre class="r"><code>attach(alc)
 table(G3,high_use,sex)</code></pre>
 <pre><code>## , , sex = F

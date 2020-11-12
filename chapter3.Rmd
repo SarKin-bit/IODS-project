@@ -1,14 +1,13 @@
 Exercise 3 Logistic regression
 ---
-author: Sari Kinnula
----
 ```{r}
 alc<-read.table(file = "alc.txt", sep="\t", header=TRUE)
 
 dim(alc)
 str(alc)
 ```
-Access the tidyverse libraries tidyr, dplyr, ggplot2
+
+Access the tidyverse libraries tidyr, dplyr, ggplot2.
 ```{r}
 library(tidyr); library(dplyr); library(ggplot2)
 ```
@@ -18,7 +17,7 @@ Glimpse at the alc data.
 glimpse(alc) 
 ```
 
-Use gather() to gather columns into key-value pairs and then glimpse() at the resulting data
+Use gather() to gather columns into key-value pairs and then glimpse() at the resulting data.
 ```{r}
 gather(alc) %>% glimpse
 ```
@@ -39,7 +38,7 @@ Hypothesis 3: There is a relationship between alcohol use and student's health.
 Hypothesis 4: There is a relationship between alcohol use and student's quality of family relationships.
 
 
-#Hypothesis 1:
+#Hypothesis 1: There is a relationship between alcohol use and student's grade.
 ```{r}
 attach(alc)
 table(G3,high_use,sex)
