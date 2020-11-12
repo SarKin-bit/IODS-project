@@ -102,6 +102,7 @@ Define the plot as a boxplot and draw it.
 ```{r}
 g4 + geom_boxplot() + ggtitle("Student health by alcohol consumption")
 ```
+
 For male students, their health score was similar weather they were high users of alcohol or not. For female students, the health score was higher for those students who were high users of alcohol, surprisingly. In high alcohol users there was a lot more variation though.
 
 
