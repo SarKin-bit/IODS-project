@@ -1,4 +1,162 @@
-# Exercise 3 Logistic regression
+Exercise 3 Logistic regression
 ---
-author: "Sari Kinnula"
+author: Sari Kinnula
 ---
+```{r}
+alc<-read.table(file = "alc.txt", sep="\t", header=TRUE)
+
+dim(alc)
+str(alc)
+```
+Access the tidyverse libraries tidyr, dplyr, ggplot2
+```{r}
+library(tidyr); library(dplyr); library(ggplot2)
+```
+
+Glimpse at the alc data.
+```{r}
+glimpse(alc) 
+```
+
+Use gather() to gather columns into key-value pairs and then glimpse() at the resulting data
+```{r}
+gather(alc) %>% glimpse
+```
+
+Draw a bar plot of each variable.
+```{r}
+gather(alc) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar()
+
+```
+
+There are 382 observations (rows) and 35 variables (columns). The variables are either integers, numeric, factors or logical.  For more detailed explanation of the variables, please visit: https://archive.ics.uci.edu/ml/datasets/Student+Performance
+
+Chosen interesting variables: student's grade, school, home address type and student's health.
+
+Hypothesis 1: There is a relationship between alcohol use and student's grade.
+Hypothesis 2: There is a relationship between alcohol use and student's absences.
+Hypothesis 3: There is a relationship between alcohol use and student's health.
+Hypothesis 4: There is a relationship between alcohol use and student's quality of family relationships.
+
+
+#Hypothesis 1:
+```{r}
+attach(alc)
+table(G3,high_use,sex)
+```
+
+
+```{r}
+library(ggplot2)
+```
+
+Initialise a plot of high_use and G3
+```{r}
+g1 <- ggplot(alc, aes(x = high_use, y = G3, col = sex))
+```
+
+Define the plot as a boxplot and draw it.
+```{r}
+g1 + geom_boxplot() + ylab("grade")
+```
+
+Initialise a plot of high use and sex.
+```{r}
+g2<-ggplot(data = alc, aes(x = high_use, fill = sex))
+```
+
+Define the plot as a bar lot and draw it.
+```{r}
+g2 + geom_bar()+facet_wrap("sex")
+```
+
+
+Male students who have high usage of alcohol (use a lot of alcohol) have lower grades than men who do not use a lot of alcohol. For female students, the high use of alcohol does not affect the grade. 
+
+#Hypothesis 2: There is a relationship between alcohol use and student's absences.
+
+```{r}
+attach(alc)
+table(G3,absences,sex)
+library(ggplot2)
+```
+
+Initialise a plot of high_use and absences.
+```{r}
+g3 <- ggplot(alc, aes(x = high_use, y = absences, col = sex))
+```
+
+Define the plot as a boxplot and draw it.
+```{r}
+g3 + geom_boxplot() + ggtitle("Student absences by alcohol consumption")
+```
+
+For male students, high users of alcohol have more absences from school. For female students, the number of absences is quite similar weather they use high amount of alcohol or not.
+
+Hypothesis 3: There is a relationship between alcohol use and student's health.
+Initialise a plot of high_use and health.
+```{r}
+g4 <- ggplot(alc, aes(x = high_use, y = health, col = sex))
+```
+
+Define the plot as a boxplot and draw it.
+```{r}
+g4 + geom_boxplot() + ggtitle("Student health by alcohol consumption")
+```
+For male students, their health score was similar weather they were high users of alcohol or not. For female students, the health score was higher for those students who were high users of alcohol, surprisingly. In high alcohol users there was a lot more variation though.
+
+
+Hypothesis 4: There is a relationship between alcohol use and student's quality of family relationships.
+Initialise a plot of high_use and health.
+```{r}
+g4 <- ggplot(alc, aes(x = high_use, y = goout, col = sex))
+```
+
+Define the plot as a boxplot and draw it.
+```{r}
+g4 + geom_boxplot() + ggtitle("Going out with friends by alcohol consumption")
+```
+
+Both male and female high alcohol users go out with friends more than low alcohol users. 
+
+
+Find the model with glm().
+```{r}
+m <- glm(high_use ~ absences + G3 + health + goout, data = alc, family = "binomial")
+```
+
+Print out a summary of the model.
+```{r}
+summary(m)
+```
+
+Print out the coefficients of the model.
+```{r}
+coef(m)
+```
+
+Absences an d going out with friends are highly significant predictor of the probability of being a high user of alcohol. 
+Health and grade are not significant predictor of the probability of being a high user of alcohol. 
+
+
+Present and interpret the coefficients of the model as odds ratios and provide confidence intervals for them. 
+Find the model with glm().
+```{r}
+m <- glm(high_use ~ absences + G3 + health + goout, data = alc, family = "binomial")
+```
+
+Compute odds ratios (OR).
+```{r}
+OR <- coef(m) %>% exp
+```
+
+Compute confidence intervals (CI).
+```{r}
+CI <- confint(m) %>% exp
+```
+
+Print out the odds ratios with their confidence intervals
+```{r}
+cbind(OR, CI)
+```
+
