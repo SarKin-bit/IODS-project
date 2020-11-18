@@ -7,10 +7,13 @@ dim(hd)
 str(hd)
 summary(hd)
 
+#There are 195 observations and 8 variables.
 
 dim(gii)
 str(gii)
 summary(gii)
+
+#There are 195 observations and 10 variables.
 
 #print out the column names of the data.
 colnames(hd)
@@ -69,35 +72,31 @@ colnames(gii)[10] <- "lab_part_m"
 colnames(gii)
 
 
-#5.	Mutate the “Gender inequality” data and create two new variables. The first one 
-#should be the ratio of Female and Male populations with secondary education in each country.
-#(i.e. edu2F / edu2M). The second new variable should be the ratio of labour force participation of 
-#females and males in each country (i.e. labF / labM). (1 point)
+#Mutate the “Gender inequality” data and create two new variables.
 
 library(dplyr)
 gii <- mutate(gii, sec_edu_rat = sec_edu_f/sec_edu_m)
 gii <- mutate(gii, lab_rat = lab_part_f/lab_part_m)
 
-#print out the new column names of the data.
+#Print out the new column names of the data.
 colnames(gii)
 
-# Join the two datasets using the variable coutry as the identifier
+#Join the two datasets using the variable coutry as the identifier.
 
 ?inner_join
 
 human<-inner_join(gii, hd, by = "Country", suffix = c(".gii", ".hd"))
 
-# Check that everything looks like it should be
+#Check that everything looks like it should be.
 
 human
 dim(human)
 
-#There are 19 variables and 195 observations, like there should be.
-
+#There are 19 variables and 195 observations.
 
 write.table(human, file="data/human.txt", sep="\t")
 
-#Check that everything looks ok
+#Check that everything looks ok.
 read.table("data/human.txt", sep="\t")
 
 
