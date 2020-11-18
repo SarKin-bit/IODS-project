@@ -1,5 +1,5 @@
 Exercise 4 Clustering and classification.
-
+---
 
 ```{r}
 #Access the MASS package.
@@ -24,7 +24,9 @@ summary(Boston)
 pairs(Boston)
 ```
 
-There are 506 observations (rows) and 14 variables (columns) in the dataset. For more details of the dataset, please visit  https://stat.ethz.ch/R-manual/R-devel/library/MASS/html/Boston.html
+There are 506 observations (rows) and 14 variables (columns) in the dataset. The variables are for example crim (per capita crime rate by town), zn (proportion of residential land zoned for lots over 25,000 sq.ft), indus (proportion of non-retail business acres per town), chas (Charles River dummy variable (= 1 if tract bounds river; 0 otherwise)), nox (nitrogen oxides concentration (parts per 10 million)), lstat (lower status of the population (percent)) and medv (median value of owner-occupied homes in \$1000s).
+
+For more details of the dataset, please visit  https://stat.ethz.ch/R-manual/R-devel/library/MASS/html/Boston.html
 
 ```{r}
 library(dplyr)
@@ -193,6 +195,8 @@ plot(lda.fit, dimen = 2, col = classes, pch = classes)
 lda.arrows(lda.fit, myscale = 1)
 ```
 
+The best linear separator is variable index of accessibility to radial highways (rad), which has the longest arrow in the picture. The second best separator is difficult to make out, but it looks like it would be nitrogen oxides concentration (parts per 10 million) (nox).
+
 
 Predicting with the model.
 
@@ -226,7 +230,7 @@ ratio <- c(correct/total)
 ratio
 ```
 
-Accuracy of the model was 74%, which could be better.
+Accuracy of the model was 74%, which is not that bad but could be better.
 
 
 Reload Boston dataset.
@@ -359,5 +363,5 @@ km3D <-kmeans(boston_scaled, centers = 4)
 plot_ly(x = matrix_product$LD1, y = matrix_product$LD2, z = matrix_product$LD3, type= 'scatter3d', mode='markers', color = km3D$cluster[ind])
 ```
 
-
+Medium high crime rates seems to bee better defined than cluster 1. Cluster 2 is a bit better defined (not so much intermingling) than low crime rate in the first picture.  Cluster 3 is quite similar with high crime rates, even though cluster 3 is a bit more better defined. Cluster 4 is more defined than medium low crime rates in the first picture. 
 
