@@ -1,4 +1,4 @@
-Exercise 4 Clustering and classification.
+Exercise 4 Clustering and classification
 ---
 
 ```{r}
@@ -27,6 +27,7 @@ pairs(Boston)
 There are 506 observations (rows) and 14 variables (columns) in the dataset. The variables are for example crim (per capita crime rate by town), zn (proportion of residential land zoned for lots over 25,000 sq.ft), indus (proportion of non-retail business acres per town), chas (Charles River dummy variable (= 1 if tract bounds river; 0 otherwise)), nox (nitrogen oxides concentration (parts per 10 million)), lstat (lower status of the population (percent)) and medv (median value of owner-occupied homes in \$1000s).
 
 For more details of the dataset, please visit  https://stat.ethz.ch/R-manual/R-devel/library/MASS/html/Boston.html
+
 
 ```{r}
 library(dplyr)
@@ -84,6 +85,7 @@ boston_scaled <- as.data.frame(boston_scaled)
 
 After scaling the mean is 0 for all the variables which means that all variables are normally distributed. 
 
+
 ```{r}
 #Summary of the scaled crime rate.
 summary(boston_scaled$crim)
@@ -95,7 +97,6 @@ bins <- quantile(boston_scaled$crim)
 bins
 ```
 
-
 ```{r}
 #Create a categorical variable 'crime'.
 crime <- cut(boston_scaled$crim, breaks = bins, include.lowest = TRUE, labels = c("low", "med_low", "med_high", "high"))
@@ -106,12 +107,10 @@ crime <- cut(boston_scaled$crim, breaks = bins, include.lowest = TRUE, labels = 
 table(crime)
 ```
 
-
 ```{r}
 #Remove original crim from the dataset.
 boston_scaled <- dplyr::select(boston_scaled, -crim)
 ```
-
 
 ```{r}
 #Add the new categorical value to scaled data.
@@ -126,35 +125,31 @@ Divide the dataset to train and test sets, so that 80% of the data belongs to th
 n <- nrow(boston_scaled)
 ```
 
-
 ```{r}
 #Choose randomly 80% of the rows.
 ind <- sample(n,  size = n * 0.8)
 ```
-
 
 ```{r}
 #Create train set.
 train <- boston_scaled[ind,]
 ```
 
-
 ```{r}
 #Create test set.
 test <- boston_scaled[-ind,]
 ```
-
 
 ```{r}
 #Save the correct classes from test data.
 correct_classes <- test$crime
 ```
 
-
 ```{r}
 #Remove the crime variable from test data.
 test <- dplyr::select(test, -crime)
 ```
+
 
 Fit the linear discriminant analysis on the train set.
 
@@ -163,12 +158,10 @@ Fit the linear discriminant analysis on the train set.
 lda.fit <- lda(crime ~ ., data = train)
 ```
 
-
 ```{r}
 #Print the lda.fit object.
 lda.fit
 ```
-
 
 ```{r}
 #The function for lda biplot arrows.
@@ -182,12 +175,10 @@ lda.arrows <- function(x, myscale = 1, arrow_heads = 0.1, color = "orange", tex 
 }
 ```
 
-
 ```{r}
 #Target classes as numeric.
 classes <- as.numeric(train$crime)
 ```
-
 
 ```{r}
 #Plot the lda results.
@@ -207,7 +198,6 @@ lda.pred <- predict(lda.fit, newdata = test)
 #Cross tabulate the results.
 table(correct = correct_classes, predicted = lda.pred$class)
 ```
-
 
 Note that the numbers change every time you run the model.
 The model predicted the high crime rates well (32/32 were classified correctly). Other categories the model did not predict as well:
@@ -240,29 +230,26 @@ library(MASS)
 data("Boston")
 ```
 
-
 ```{r}
 #Center and standardize variables.
 boston_scaled <- scale(Boston)
 ```
-
 
 ```{r}
 #Change the object to data frame from matrix type.
 boston_scaled <- as.data.frame(boston_scaled)
 ```
 
-
 ```{r}
 #Calculate the Euclidean distances between observations.
 dist_eu <- dist(boston_scaled)
 ```
 
-
 ```{r}
 #Look at the summary of the distances.
 summary(dist_eu)
 ```
+
 
 Run k-means algorithm on the dataset. 
 ```{r}
@@ -270,30 +257,25 @@ Run k-means algorithm on the dataset.
 km <-kmeans(boston_scaled, centers = 3)
 ```
 
-
 ```{r}
 #Plot the Boston dataset with clusters.
 pairs(boston_scaled, col = km$cluster)
 ```
-
 
 ```{r}
 #Investigate the optimal number of clusters and run the algorithm again.
 set.seed(123)
 ```
 
-
 ```{r}
 #Determine the number of clusters.
 k_max <- 10
 ```
 
-
 ```{r}
 #Calculate the total within sum of squares.
 twcss <- sapply(1:k_max, function(k){kmeans(boston_scaled, k)$tot.withinss})
 ```
-
 
 ```{r}
 #Visualize the results with qplot. Visualize (with qplot) the total WCSS when the number of cluster goes from 1 to 10.
@@ -328,7 +310,6 @@ model_predictors <- dplyr::select(train, -crime)
 dim(model_predictors)
 dim(lda.fit$scaling)
 ```
-
 
 ```{r}
 #Matrix multiplication.
