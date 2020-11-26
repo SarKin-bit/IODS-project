@@ -1,0 +1,139 @@
+Exercise 5. Dimensionality reduction techniques
+---
+```{r}
+#Read the data and show summaries of the variables.
+human<-read.table(file = "human.txt", sep="\t", header=TRUE)
+str(human)
+summary(human)
+```
+
+There are 8 variables and 155 observations.
+
+
+```{r}
+#Access GGally.
+library(GGally)
+
+#Visualize the variables.
+ggpairs(human)
+```
+
+Many of the variables are skewed to either side and/or have long tails. Education expectancy looks the most normally distributed.
+Mean education expectancy for example is 13.2 years, mean life expectancy 71.7 years and mean adolescent birth rate 47.2. 
+There is great variation within some variables: For the Gross national income per capita, the minimum value is 581, median 12040 and maximum 123124 and for the Maternal mortality ratio, the minimum value is 1, median 49 and maximum 1100. Then, in the Education expectancy variation is relatively small as the minimum value is 5.4, median 13.5 and maximum value 20.2.
+
+There are several variables that are highly correlated with each other, for example:
+Adolescent birth rate and Maternal mortality,
+Life expectancy and Education expectancy,
+Life expectancy and Adolescent birth rate,
+Education expectancy and Maternal mortality.
+
+Percentage of female representatives in parliament and Adolescent birth rate, for example, are not correlated.
+
+
+##### Principal component analysis for non-standardized data
+
+```{r}
+#Perform principal component analysis on the non-standardized data.
+pca_human <- prcomp(human)
+```
+
+
+```{r}
+#Create and print out a summary of pca_human.
+s <- summary(pca_human)
+s
+```
+
+
+```{r}
+# Rounded percetanges of variance captured by each PC.
+pca_pr <- round(1*s$importance[2,]*100, digits = 1) 
+```
+
+
+```{r}
+#Print out the percentages of variance.
+pca_pr
+```
+
+
+```{r}
+#Create object pc_lab to be used as axis labels.
+pc_lab <- paste0(names(pca_pr), " (", pca_pr, "%)") 
+```
+
+
+```{r}
+#Draw a biplot.
+biplot(pca_human, cex = c(0.8, 0.1), col = c("grey40", "deeppink2"), xlab = pc_lab[1], ylab = pc_lab[2])
+```
+
+
+##### Principal component analysis for standardized data
+
+```{r}
+#Standardize the variables.
+human_std <- scale(human)
+```
+
+
+```{r}
+#Print out summaries of the standardized variables.
+summary(human_std)
+```
+
+
+```{r}
+#Perform principal component analysis (with the SVD method).
+pca_human <- prcomp(human_std)
+```
+
+
+```{r}
+#Create and print out a summary of pca_human.
+s <- summary(pca_human)
+s
+```
+
+
+```{r}
+#Rounded percetanges of variance captured by each PC.
+pca_pr <- round(1*s$importance[2,]*100, digits = 1)
+```
+
+ 
+```{r}
+#Print out the percentages of variance.
+pca_pr
+```
+
+
+```{r}
+#Create object pc_lab to be used as axis labels.
+pc_lab <- paste0(names(pca_pr), " (", pca_pr, "%)") 
+```
+
+
+```{r}
+#Draw a biplot.
+biplot(pca_human, choices = 1:2, cex = c(0.6, 1), col = c("grey40", "deeppink2"), xlab = pc_lab[1], ylab = pc_lab[2])
+```
+
+
+In the non-standardized data, the first principal component PC1 explains 100% of the variance and the second principal component PC2 explains 0% of the variance. In the standardized data, PC1 explains 53.6% of the variance and PC2 explains 16.2% of the variance. Together they explain 69.8% of the variance of the whole dataset.
+In PCA, the principal components are constructed so, that the first principal component accounts for the largest possible variance in the data set and the second one the second largest possible variance.
+
+In the non-standardized data, there were variables with high range (great variance), which dominated the ones with smaller range, which lead to biased results. Standardization standardizes the variables so that every one of them contributes equally to the analysis, which prevents the problem of variables with larger range dominating and causing biased results.
+
+In the non-standardized data, for example Gross national income GNI had such a big variance that it caused biased results. After standardization and removing the domination problem, the effects of the variables with smaller variation, for example education expectancy, can be seen.
+
+
+##### Personal interpretations of the first two principal component dimensions
+
+
+
+##### Tea dataset and multiple correspondence analysis
+
+
+
