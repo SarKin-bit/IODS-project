@@ -31,7 +31,7 @@ Education expectancy and Maternal mortality.
 Percentage of female representatives in parliament and Adolescent birth rate, for example, are not correlated.
 
 
-##### Principal component analysis for non-standardized data
+### Principal component analysis for non-standardized data
 
 ```{r}
 #Perform principal component analysis on the non-standardized data.
@@ -70,7 +70,7 @@ biplot(pca_human, cex = c(0.8, 0.1), col = c("grey40", "deeppink2"), xlab = pc_l
 ```
 
 
-##### Principal component analysis for standardized data
+### Principal component analysis for standardized data
 
 ```{r}
 #Standardize the variables.
@@ -129,11 +129,79 @@ In the non-standardized data, there were variables with high range (great varian
 In the non-standardized data, for example Gross national income GNI had such a big variance that it caused biased results. After standardization and removing the domination problem, the effects of the variables with smaller variation, for example education expectancy, can be seen.
 
 
-##### Personal interpretations of the first two principal component dimensions
+
+### Personal interpretations of the first two principal component dimensions
+
+Iceland, Sweden, Norway, Finland and Denmark are closely grouped together and are therefore similar to each other.
+They all have quite high Percentage of female representatives in parliament, Expected years of education, Gross national income per capita, Population with secondary Education female to male ratio and life expectancy at birth. 
+
+The arrows visualize the connections between the original variables and the principal components.
+Expected years of education, Gross national income per capita, Population with secondary education female to male ratio and Life expectancy at birth have a small angle between them, so we can assume correlation between them. Maternal mortality ratio and adolescent birth rate also seem to be correlated.
+The angle of the arrows for Percentage of female representatives in parliament and Adolescent birth rate for example is quite large and therefore we can assume that the is no correlation between those variables.
+
+Expected years of education, Gross national income per capita, Population with secondary education female to male ratio, Life expectancy at birth, Maternal mortality ratio and Adolescent birth rate all have a small angle with the principal component 1 and can be assumed to correlate with each other.
+Percentage of female representatives in parliament and Labour force participation rate female/male ratio on the other hand, can be assumed to correlate with principal component 2.
+
+Sierra Leone, Liberia, Congo and Chad for example seem to have both high Maternal mortality ratio and Adolescent birth rate and do not have high Expected years of education, Gross national income per capita or life expectancy at birth. Mosambique has both quite high Maternal mortality ratio and Adolescent birth rate but women also have a high Labour force participation rate.
 
 
 
-##### Tea dataset and multiple correspondence analysis
+### Tea dataset and multiple correspondence analysis
+
+
+```{r}
+#Load library and tea dataset.
+library(FactoMineR)
+data(tea)
+```
+
+
+```{r}
+#Explore tea dataset.
+dim(tea)
+str(tea)
+summary(tea)
+```
+
+There are 36 variables and 300 observations. All the variables are factorial, except age, which is integral.
+
+
+```{r}
+#Access library dplyr.
+library(dplyr)
+library(tidyr)
+
+#Column names to keep in the dataset.
+keep_columns <- c("Tea", "How", "how", "sugar", "where", "lunch")
+
+#Select the 'keep_columns' to create a new dataset.
+tea_time <- dplyr::select(tea, one_of(keep_columns))
+
+#Look at the summaries and structure of the data.
+str(tea_time)
+summary(tea)
+```
+
+There are now 6 variables and 300 observations. 
+
+```{r}
+#Multiple correspondence analysis.
+mca <- MCA(tea_time, graph = FALSE)
+
+#Summary of the model.
+summary(mca)
+```
+
+```{r}
+#Visualize the dataset.
+gather(tea_time) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar() + theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))
+
+#Visualize Multiple Correspondence Analysis.
+plot(mca, invisible=c("ind"), habillage="quali")
+```
+
+People who drink unpackaged tea buy it from tea shops and people who use tea bags for theit tea buy it from the chain stores. People who drink both unpackaged tea and use tea bags also buy their tea from both types of shops.
+
 
 
 
