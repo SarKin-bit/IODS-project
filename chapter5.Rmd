@@ -117,7 +117,7 @@ pc_lab <- paste0(names(pca_pr), " (", pca_pr, "%)")
 
 ```{r}
 #Draw a biplot.
-biplot(pca_human, choices = 1:2, cex = c(0.6, 1), col = c("grey40", "deeppink2"), xlab = pc_lab[1], ylab = pc_lab[2], main = "Global health and equality related indicators and their connections") 
+biplot(pca_human, choices = 1:2, cex = c(0.6, 1), col = c("grey40", "deeppink2"), xlab = pc_lab[1], ylab = pc_lab[2], main = "Global health and equality related indicators") 
 
 ```
 
