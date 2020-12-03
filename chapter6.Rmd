@@ -22,7 +22,7 @@ str(RATSL)
 summary(RATSL)
 ```
 
-There are 176 observations and 5 variables. Data was converted to long form in the data wrangling exercise.
+There are 176 observations and 5 variables. The variables are ID, Group, WD, Weight and Time. Data was converted to long form in the data wrangling exercise.
 Rat's weights have been measured several times on various weekdays.
 
 ```{r}
@@ -188,6 +188,140 @@ anova(fit)
 
 There is a statistically significant difference (p<0.001) between groups 2 and group 3 compared with group 1. 
 
+###### Implement the analyses of Chapter 9 of MABS using the BPRS data.
+
+```{r}
+#Read the data and explore dimensions.
+BPRSL<-read.table(file = "BPRSL.txt", sep="\t", header=TRUE)
+
+dim(BPRSL)
+str(BPRSL)
+summary(BPRSL)
+```
+
+
+```{r}
+#Change the categorical variables to factors.
+BPRSL$treatment <- factor(BPRSL$treatment)
+BPRSL$subject <- factor(BPRSL$subject)
+```
+
+
+```{r}
+dim(BPRSL)
+str(BPRSL)
+summary(BPRSL)
+#Glimpse the data.
+glimpse(BPRSL)
+```
+
+
+There are 360 observations and 5 variables. The variables are treatments, subject, weeks, bprs and week. Data was converted to long form in the data wrangling exercise.
+
+
+```{r}
+#Plot the BPRSL data.
+ggplot(BPRSL, aes(x = week, y = bprs, linetype = as.factor(subject))) +
+  geom_line() +
+  scale_linetype_manual(values = rep(1:10, times=4)) +
+  facet_grid(. ~ treatment, labeller = label_both) +
+  theme(legend.position = "top") + 
+  scale_y_continuous(limits = c(min(BPRSL$bprs), max(BPRSL$bprs)))
+```
+
+
+#### The Linear regression model
+```{r}
+#Create a regression model.
+BPRS_reg <- lm(bprs ~ week + treatment, data = BPRSL)
+#Print out a summary of the model.
+summary(BPRS_reg)
+```
+
+In the linear regression model bprs (brief psychiatric rating scale) is dependent variable and week and treatment are explanatory variables.
+Variable "treatment" is not statistically significant. It does not have an impact on the model. Variable "week is statistically significant (p<0.001).
+
+
+#### The Random Intercept Model 
+
+```{r}
+library("lme4")
+#Create a random intercept model.
+BPRS_ref <- lmer(bprs ~ week + treatment + (1 | subject), data = BPRSL, REML = FALSE)
+#Print the summary of the model.
+summary(BPRS_ref)
+```
+
+In this model too the bprs (brief psychiatric rating scale) is dependent variable and week and treatment are explanatory variables. Random effect is subject.
+The random intercept model gives different random intercept value for each observation. The linear regression model assumes independence of the repeated measures of bprs rating, which the random intercept model does not.
+Compared with the linear regression model, the random intercept model gives lower standard errors for the explanatory variables.
+
+
+#### Random Intercept and Random Slope Model
+
+```{r}
+BPRS_ref1 <- lmer(bprs ~ week + treatment + (week | subject), data = BPRSL, REML = FALSE)
+summary(BPRS_ref1)
+```
+
+In addition to random intercept model giving a different intercept value for each observation, here we ad a random slope for each observation. This allows us to see the effect of time (weeks).
+The estimates for the explanatory variables are again the same compared with the two previous models. Standard error for explanatory variable #week# is higher and for  explanatory variable #treatment# lower compared with the previous model.
+Here, the standard deviation for the random factor #subject# is higher than in the Random intercept model without the slope, so adding the random factor "week" has increased the standard deviation of the "subject". This means that "subject" explains more of the variation now.
 
 
 
+#### Random Intercept and Random Slope Model with interaction
+
+```{r}
+#Create a random intercept and random slope model.
+BPRS_ref2 <- lmer(bprs ~ week * treatment + (week | subject), data = BPRSL, REML = FALSE)
+summary(BPRS_ref2)
+```
+
+
+```{r}
+#Perform an ANOVA test on the two models.
+anova(BPRS_ref1, BPRS_ref2)
+```
+
+
+Here, standard deviation of the random effects "subject" and "week" has increased slightly, meaning that they explain the variation slightly more than in the previous model.
+The estimates for the explanatory variables have changed only slightly compared with the previous models. Standard error for explanatory variable #week# is higher and for explanatory variable #treatment# lower compared with the previous model.
+The standard deviation for the random factors have again increased slightly.
+In this model we can also see the interaction of the variables "week" and "treatment".
+
+According to the ANOVA test, the fit against the comparison model is not that good as p>0.05 (0.075)
+
+
+```{r}
+#Draw the plot of BPRSL.
+ggplot(BPRSL, aes(x = week, y = bprs, col = subject)) +
+  geom_line(aes(linetype = treatment)) +
+  scale_x_continuous(name = "Week") +
+  scale_y_continuous(name = "BPRS") +
+  theme(legend.position = "top") +
+  ggtitle("Observed") 
+```
+
+
+```{r}
+#Create a vector of the fitted values.
+Fitted <- fitted(BPRS_ref2)
+#Create a new column fitted to BPRSL.
+BPRSL <- BPRSL %>% mutate(Fitted)
+
+#Draw the plot of fitted values of BPRSL.
+ggplot(BPRSL, aes(x = week, y = Fitted, col = subject)) +
+  geom_line(aes(linetype = treatment)) +
+  scale_x_continuous(name = "Week") +
+  scale_y_continuous(name = "BPRS") +
+  theme(legend.position = "bottom") +
+  ggtitle("Fitted") 
+```
+
+
+
+
+  
+  
+  
