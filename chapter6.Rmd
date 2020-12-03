@@ -1,0 +1,193 @@
+Exercise 6. Analysis of longitudinal data
+---
+
+#### Implement the analyses of Chapter 8 of MABS using the RATS data. 
+
+```{r}
+#Read the data and explore dimensions.
+RATSL<-read.table(file = "RATSL.txt", sep="\t", header=TRUE)
+
+dim(RATSL)
+str(RATSL)
+summary(RATSL)
+```
+
+```{r}
+#Change the categorical variables to factors.
+RATSL$ID <- factor(RATSL$ID)
+RATSL$Group <- factor(RATSL$Group)
+
+dim(RATSL)
+str(RATSL)
+summary(RATSL)
+```
+
+There are 176 observations and 5 variables. Data was converted to long form in the data wrangling exercise.
+Rat's weights have been measured several times on various weekdays.
+
+```{r}
+#Plot the rat weights.
+library("tidyverse")
+
+ggplot(RATSL, aes(x = Time, y = Weight, linetype = ID))+
+  geom_line() + scale_linetype_manual(values = rep(1:10, times=4))+
+  facet_grid(. ~ Group, labeller = label_both)+
+  theme_bw() + theme(legend.position = "none")+
+  theme(panel.grid.minor.y = element_blank()) +
+  scale_y_continuous(limits = c(min(RATSL$Weight), max(RATSL$Weight)))
+```
+
+The plot shows 3 different groups and the rat's weight change over time. In group 1, the weight of the rats is lower than in the other groups.
+The weights of the rats is highest in the group 3. All groups seem to have an outlier, in group 2 the "biggest" one.
+In all groups the weight of the rats increases during the experiment. 
+
+```{r}
+#Standardize the variable weight.
+RATSL <- RATSL %>%
+  group_by(Time) %>%
+  mutate(stdweight = Weight) %>%
+  ungroup()
+```
+
+
+```{r}
+#Glimpse the data and check the structure.
+glimpse(RATSL)
+str(RATSL)
+summary(RATSL)
+```
+
+
+```{r}
+#Plot the standardized rat weights.
+ggplot(RATSL, aes(x = Time, y = stdweight, linetype = ID)) +
+  geom_line() + scale_linetype_manual(values = rep(1:10, times=4))+
+  facet_grid(. ~ Group, labeller = label_both)+
+  theme_bw() + theme(legend.position = "none")+
+  theme(panel.grid.minor.y = element_blank())+
+  scale_y_continuous(name = "Standardized weight")
+```
+
+The plot shows 3 different groups and the rat's weight change over time after standardization.
+
+
+### Plot showing average (mean) to make graph more readable.
+
+```{r}
+#Number of weeks, baseline (week 0) included.
+n <- RATSL$Time %>% unique() %>% length()
+#Summary data with mean and standard error of weight by group and time.
+RATSS <- RATSL %>%
+  group_by(Group, Time) %>%
+  summarise(mean = mean(Weight), sd = sd(Weight)) %>%
+  ungroup()
+```
+
+
+```{r}
+# Glimpse the data
+glimpse(RATSS)
+```
+
+
+
+```{r}
+#Plot the mean profiles.
+ggplot(RATSS, aes(x = Time, y = mean, linetype = Group, shape = Group)) +
+  geom_line() +
+  scale_linetype_manual(values = c(1,2,3)) +
+  geom_point(size=3) +
+  scale_shape_manual(values = c(1,2,3)) +
+  #geom_errorbar(aes(ymin=mean-se, ymax=mean+se, linetype="1"), width=0.3) +
+  theme(legend.position = c(0.8,0.8)) +
+  scale_y_continuous(name = "mean(Weight) +/- se(Weight)")
+```
+
+The plot shows 3 groups and the mean weight change over time.
+There is no overlap in the mean profiles of the three groups, which suggests that there is a difference between the three groups with respect to the mean weight values.
+
+
+#### Applying the Summary Measure Approach
+
+```{r}
+#Create a summary data by Group and ID with mean as the summary variable (ignoring baseline time 1).
+RATSL8S <- RATSL %>%
+  filter(Time > 1) %>%
+  group_by(Group, ID) %>%
+  summarise( mean=mean(Weight) ) %>%
+  ungroup()
+```
+
+
+```{r}
+#Glimpse the data.
+glimpse(RATSL8S)
+```
+
+
+```{r}
+#Draw a boxplot of the mean versus treatment.
+library(dplyr)
+ggplot(RATSL8S, aes(x = Group, y = mean)) +
+  geom_boxplot() +
+  stat_summary(fun = "mean", geom = "point", shape=23, size=4, fill = "white") +
+  scale_y_continuous(name = "mean(Weight), weeks 1-8")
+```
+
+
+We can see one outlier in each group. In group 2, the outlier is furthest distance from the other values. In groups 1 and 3 the sistance of the outlier from other values is not as great.
+
+#### Draw the boxplot without the outliers
+
+#Create a new data by filtering the outlier and adjust the ggplot code the draw the plot again with the new data.
+
+```{r}
+#Draw a boxplot of the mean versus treatment.
+#Find the numerical values for the outliers.
+RATSL8S$mean
+```
+
+
+```{r}
+#Filter the outliers.
+RATSL8S1 <- filter(RATSL8S, mean != 238.9, mean != 594.0, mean != 495.2)
+
+RATSL8S1$mean
+```
+
+
+```{r}
+#Create a boxplot.
+ggplot(RATSL8S1, aes(x = Group, y = mean)) +
+  geom_boxplot() +
+  stat_summary(fun = "mean", geom = "point", shape=23, size=4, fill = "white") +
+  scale_y_continuous(name = "mean(weight), weeks 1-8")
+```
+
+
+After the outliers are removed, the variation inside the groups decreases notably, which can be seen from the picture.
+As there are three groups instead of two, t-test cannot be used.
+
+```{r}
+#Add the baseline from the original data as a new variable to the summary data.
+RATSL8S2 <- RATSL8S %>%
+  mutate(baseline = filter(RATSL, Time==1)$Weight)
+```
+
+
+```{r}
+#Fit the linear model with the mean as the response. 
+fit <- lm (mean ~ Group, data = RATSL8S2)
+summary(fit)
+```
+
+```{r}
+#Compute the analysis of variance table for the fitted model with anova().
+anova(fit)
+```
+
+There is a statistically significant difference (p<0.001) between groups 2 and group 3 compared with group 1. 
+
+
+
+
