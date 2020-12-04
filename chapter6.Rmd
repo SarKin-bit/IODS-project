@@ -39,7 +39,8 @@ ggplot(RATSL, aes(x = Time, y = Weight, linetype = ID))+
 
 The plot shows 3 different groups and the rat's weight change over time. In group 1, the weight of the rats is lower than in the other groups.
 The weights of the rats is highest in the group 3. All groups seem to have an outlier, in group 2 the "biggest" one.
-In all groups the weight of the rats increases during the experiment. 
+In all groups the weight of the rats increases during the experiment. There also seems to be tracking as rats who have high weight in the beginning of the experiment, have high weight at the end of the experiment.
+
 
 ```{r}
 #Standardize the variable weight.
@@ -264,10 +265,18 @@ BPRS_ref1 <- lmer(bprs ~ week + treatment + (week | subject), data = BPRSL, REML
 summary(BPRS_ref1)
 ```
 
+```{r}
+#Perform an ANOVA test on the two models.
+anova(BPRS_ref1, BPRS_ref)
+```
+
+
+
 In addition to random intercept model giving a different intercept value for each observation, here we ad a random slope for each observation. This allows us to see the effect of time (weeks).
 The estimates for the explanatory variables are again the same compared with the two previous models. Standard error for explanatory variable #week# is higher and for  explanatory variable #treatment# lower compared with the previous model.
 Here, the standard deviation for the random factor #subject# is higher than in the Random intercept model without the slope, so adding the random factor "week" has increased the standard deviation of the "subject". This means that "subject" explains more of the variation now.
 
+According to the ANOVA test, the fit against the comparison model is quite good as p<0.05 (0.026).
 
 
 #### Random Intercept and Random Slope Model with interaction
@@ -320,6 +329,7 @@ ggplot(BPRSL, aes(x = week, y = Fitted, col = subject)) +
 ```
 
 
+Graphics show what was discovered earlier: the fit of the model is not great.
 
 
   
