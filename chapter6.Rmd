@@ -72,7 +72,7 @@ ggplot(RATSL, aes(x = Time, y = stdweight, linetype = ID)) +
 The plot shows 3 different groups and the rat's weight change over time after standardization.
 
 
-### Plot showing average (mean) to make graph more readable.
+#### Plot showing average (mean) to make graph more readable
 
 ```{r}
 #Number of weeks, baseline (week 0) included.
@@ -189,7 +189,7 @@ anova(fit)
 
 There is a statistically significant difference (p<0.001) between groups 2 and group 3 compared with group 1. 
 
-###### Implement the analyses of Chapter 9 of MABS using the BPRS data.
+### Implement the analyses of Chapter 9 of MABS using the BPRS data.
 
 ```{r}
 #Read the data and explore dimensions.
